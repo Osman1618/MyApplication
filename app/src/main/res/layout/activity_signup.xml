@@ -72,7 +72,7 @@
             android:layout_height="43dp"
             android:layout_marginTop="330dp"
             android:layout_marginRight="20sp"
-            android:background="#68C4CF"
+            android:background="#3C3F41"
             android:text="Log in" />
 
     </FrameLayout>

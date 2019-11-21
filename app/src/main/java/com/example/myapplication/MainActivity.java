@@ -14,14 +14,20 @@ import android.widget.Button;
 
 
 import android.widget.EditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private Button login;
     private Button signup;
+
+
 
 
 
@@ -40,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
 
+        // Initialize Firebase Auth
+
+
 
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
     public void openHomeScreen() {
         Intent intent = new Intent(this, HomeScreen.class);
