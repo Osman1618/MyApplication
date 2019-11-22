@@ -5,30 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Signup"
-    android:background="@drawable/blue_background"
+
     >
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@drawable/logo"
-
-        > </ImageView>
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10sp"
+        android:background="@drawable/ic_keyboard_backspace_black_24dp"> </ImageView>
 
     <FrameLayout
         android:layout_width="300dp"
         android:layout_height="450dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/border"
-        android:layout_marginBottom="80dp"
+
+        android:layout_marginBottom="70dp"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello,"
+            android:text="Hello, please sign up,"
             android:textColor="#FA302F2F"
-            android:textSize="40dp"
+            android:textSize="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.127"
@@ -37,6 +36,7 @@
             app:layout_constraintVertical_bias="0.084"> </TextView>
 
         <EditText
+            android:id="@+id/full_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Full Name"
@@ -44,6 +44,7 @@
             android:layout_marginTop="100dp"> </EditText>
 
         <EditText
+            android:id="@+id/newEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email_address@kth.se"
@@ -51,6 +52,7 @@
             android:layout_marginTop="170dp"> </EditText>
 
         <EditText
+            android:id="@+id/newPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="PassWord"

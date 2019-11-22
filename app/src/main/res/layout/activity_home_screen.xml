@@ -29,6 +29,18 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Button
+            android:id="@+id/logOut"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_marginVertical="50dp"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:text="LOGOUT" />
+
         <SearchView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
