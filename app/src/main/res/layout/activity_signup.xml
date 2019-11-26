@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,18 +9,27 @@
     >
 
     <ImageView
+        android:id="@+id/back_login"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10sp"
-        android:background="@drawable/ic_keyboard_backspace_black_24dp"> </ImageView>
+        android:background="@drawable/ic_keyboard_backspace_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.044"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.175"></ImageView>
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="300dp"
         android:layout_height="450dp"
-        android:layout_centerInParent="true"
 
-        android:layout_marginBottom="70dp"
-        >
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,49 +42,41 @@
             app:layout_constraintHorizontal_bias="0.127"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.084"> </TextView>
+            app:layout_constraintVertical_bias="0.084"></TextView>
 
-        <EditText
-            android:id="@+id/full_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Full Name"
-            android:textSize="24dp"
-            android:layout_marginTop="100dp"> </EditText>
 
         <EditText
             android:id="@+id/newEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:hint="Email_address@kth.se"
-            android:textSize="24dp"
-            android:layout_marginTop="170dp"> </EditText>
+            android:textSize="24dp"></EditText>
 
         <EditText
             android:id="@+id/newPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
             android:hint="PassWord"
-            android:textSize="24dp"
-            android:layout_marginTop="240dp"> </EditText>
+            android:textSize="24dp"></EditText>
+
+        <EditText
+            android:id="@+id/newPasswordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="240dp"
+            android:hint="Confirm PassWord"
+            android:textSize="24dp"></EditText>
+
         <Button
             android:id="@+id/register"
             android:layout_width="120dp"
             android:layout_height="43dp"
-            android:layout_marginLeft="160dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="330dp"
             android:background="#68C4CF"
-            android:text="Sign up"
-            />
-
-        <Button
-            android:id="@+id/toLogIn"
-            android:layout_width="120dp"
-            android:layout_height="43dp"
-            android:layout_marginTop="330dp"
-            android:layout_marginRight="20sp"
-            android:background="#3C3F41"
-            android:text="Log in" />
+            android:text="Sign up" />
 
     </FrameLayout>
 
@@ -83,4 +84,4 @@
 
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

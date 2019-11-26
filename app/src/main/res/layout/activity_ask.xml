@@ -8,7 +8,7 @@
 
     <Button
 
-        android:id="@+id/button"
+        android:id="@+id/submit"
         android:layout_width="171dp"
         android:layout_height="46dp"
         android:layout_marginStart="120dp"
@@ -20,79 +20,62 @@
         android:text="SUBMIT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.803" />
 
     <EditText
-        android:id="@+id/editText2"
-        android:layout_width="380dp"
-        android:layout_height="322dp"
+        android:id="@+id/question_title"
+        android:layout_width="382dp"
+        android:layout_height="60dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:hint="write a title to your question"
+        app:layout_constraintBottom_toTopOf="@+id/question"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+
+    <EditText
+        android:id="@+id/question"
+        android:layout_width="382dp"
+        android:layout_height="275dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="112dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/border"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="What do you want to ask?"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <ImageButton
         android:id="@+id/back_home"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_keyboard_backspace_black_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.242"></ImageButton>
+        app:layout_constraintTop_toTopOf="parent"></ImageButton>
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ask a question,"
         android:textSize="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.554"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.315"></TextView>
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="54dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="341dp"
-        android:layout_marginRight="341dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars[0]" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="321dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/border"
-        android:dropDownWidth="wrap_content"
-        android:spinnerMode="dropdown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"></TextView>
 
     <Button
         android:id="@+id/Upload_Picture"
@@ -100,13 +83,15 @@
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="170dp"
         android:layout_marginRight="170dp"
         android:text="Upload Picture"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView6"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/question"
+        app:layout_constraintVertical_bias="0.062" />
 
     <ImageView
         android:id="@+id/imageView6"
@@ -120,22 +105,22 @@
         android:background="#02090808"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2"
+        app:layout_constraintTop_toBottomOf="@+id/question"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/anonymous"
         android:layout_width="45dp"
         android:layout_height="31dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
 
+        app:layout_constraintBottom_toTopOf="@+id/submit"
         app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.357"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.343" />
 
     <TextView
         android:id="@+id/textView"
@@ -143,12 +128,26 @@
         android:layout_height="31dp"
         android:layout_marginStart="17dp"
         android:layout_marginLeft="17dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="23dp"
         android:layout_marginRight="23dp"
         android:text="Do you want your question to be anonymous"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/switch1"
-        app:layout_constraintTop_toBottomOf="@+id/Upload_Picture" />
+        app:layout_constraintStart_toEndOf="@+id/anonymous"
+        app:layout_constraintTop_toBottomOf="@+id/Upload_Picture"
+        app:layout_constraintVertical_bias="0.527" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="115dp"
+        android:layout_height="108dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Upload_Picture"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@color/common_google_signin_btn_text_dark_pressed" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

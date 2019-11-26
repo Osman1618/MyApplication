@@ -50,7 +50,10 @@ public class HomeScreen extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent (HomeScreen.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -74,21 +77,30 @@ public class HomeScreen extends AppCompatActivity {
     };
     public void openLeaderBoardScreen() {
         Intent intent = new Intent(this, LeaderBoard.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(intent);
+
     }
 
     public void openMailScreen() {
         Intent intent = new Intent(this, MailScreen.class);
+
         startActivity(intent);
+
     }
     public void openCourses(){
         Intent intent = new Intent(this, courses.class);
+
         startActivity(intent);
+
     }
     public void openAskScreen(){
         Intent intent = new Intent(this, Ask.class);
+
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+
     }
 
 }

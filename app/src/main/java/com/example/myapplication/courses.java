@@ -40,15 +40,24 @@ public class courses extends AppCompatActivity {
     };
     public void openLeaderBoardScreen() {
         Intent intent = new Intent(this, LeaderBoard.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(intent);
+        finish();
     }
 
     public void openMailScreen() {
         Intent intent = new Intent(this, MailScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(intent);
+        finish();
     }
     public void openHome(){
         Intent intent = new Intent(this, HomeScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(intent);
+        finish();
     }
 }

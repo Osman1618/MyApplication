@@ -40,10 +40,12 @@ public class MailScreen extends AppCompatActivity {
     public void openHomeScreen() {
         Intent intent = new Intent(this, HomeScreen.class);
         startActivity(intent);
+        finish();
     }
 
     public void openLeaderBoard() {
         Intent intent = new Intent(this, LeaderBoard.class);
         startActivity(intent);
+        finish();
     }
 }
