@@ -18,6 +18,7 @@ public class HomeScreen extends AppCompatActivity {
 
     private Button courses;
     private Button ask;
+    private Button answer;
     private Button logOut;
 
     FirebaseAuth mfirebaseAuth;
@@ -33,6 +34,7 @@ public class HomeScreen extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
+        answer = findViewById(R.id.answer);
         courses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +56,12 @@ public class HomeScreen extends AppCompatActivity {
 
                 startActivity(intent);
                 finish();
+            }
+        });
+        answer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openQuestionFeed();
             }
         });
     }
@@ -100,6 +108,11 @@ public class HomeScreen extends AppCompatActivity {
 
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+
+    }
+    public void openQuestionFeed(){
+        Intent intent = new Intent(this, question_feed.class);
+        startActivity(intent);
 
     }
 

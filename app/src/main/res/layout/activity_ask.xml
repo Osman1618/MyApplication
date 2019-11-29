@@ -119,7 +119,7 @@
         app:layout_constraintEnd_toStartOf="@+id/textView"
         app:layout_constraintHorizontal_bias="0.357"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.343" />
 
     <TextView
@@ -139,7 +139,7 @@
         app:layout_constraintVertical_bias="0.527" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageView"
         android:layout_width="115dp"
         android:layout_height="108dp"
         app:layout_constraintBottom_toTopOf="@+id/textView"

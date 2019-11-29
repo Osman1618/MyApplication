@@ -4,6 +4,7 @@ Course Code: for tags.
 XPs : updates.
 
  */
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -56,6 +58,9 @@ public class Ask extends AppCompatActivity {
     private DatabaseReference QuestionRef;
     private StorageReference QuestionImageRef;
     private Uri ImageUri;
+    private Integer points;
+    private ImageView mQuestionImage;
+    private String userXps;
 
     private String saveCurrenDate, saveCurrentTime, questionRandomName, downloadUrl;
     String currentUserId;
@@ -83,13 +88,14 @@ public class Ask extends AppCompatActivity {
         questionTitle = findViewById(R.id.question_title);
         anonymous = findViewById(R.id.anonymous);
 
+        mQuestionImage = findViewById(R.id.imageView);
         questionId = questionTitle.getText().toString();
         questionImagesRef = FirebaseStorage.getInstance().getReference();
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                picUpload = true;
+
                 openGallery();
             }
 
@@ -107,6 +113,7 @@ public class Ask extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ValidateQuestionInfo();
+
             }
         });
     }
@@ -123,19 +130,18 @@ public class Ask extends AppCompatActivity {
             questionBody.requestFocus();
             Toast.makeText(Ask.this, "Please write a description to your question", Toast.LENGTH_SHORT).show();
 
-        } else if (picUpload ) {
+        } else if (picUpload) {
             loadingBar.setTitle("Question submit");
             loadingBar.setMessage("Your question is being posted");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
             StoringImagetoFireBaseStorage();
-        }
-        else {
+        } else {
             loadingBar.setTitle("Question submit");
             loadingBar.setMessage("Your question is being posted");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
-            savingQuestionInformationWithNoPic();
+            savingQuestionInformation();
 
         }
 
@@ -143,16 +149,6 @@ public class Ask extends AppCompatActivity {
     }
 
     public void StoringImagetoFireBaseStorage() {
-
-        Calendar getDate = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
-        saveCurrenDate = currentDate.format(getDate.getTime());
-
-
-        Calendar gettime = Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
-        saveCurrentTime = currentTime.format(gettime.getTime());
-        questionRandomName = saveCurrenDate + saveCurrentTime;
 
         StorageReference filePath = questionImagesRef.child("Question Images").child(ImageUri.getLastPathSegment() + questionRandomName + ".jpg");
 
@@ -162,7 +158,6 @@ public class Ask extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
                     Toast.makeText(Ask.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-
                     savingQuestionInformation();
                 } else {
                     Toast.makeText(Ask.this, "Error occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -174,14 +169,25 @@ public class Ask extends AppCompatActivity {
     }
 
     public void savingQuestionInformation() {
+        Calendar getDate = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+        saveCurrenDate = currentDate.format(getDate.getTime());
+        Calendar gettime = Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        saveCurrentTime = currentTime.format(gettime.getTime());
+        questionRandomName = saveCurrenDate + saveCurrentTime;
+
+
+        if (!picUpload) {
+            downloadUrl = "there is no image assigned";
+        }
 
         UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
-
+                    userXps = dataSnapshot.child("points").getValue().toString();
                     HashMap questionMap = new HashMap();
                     questionMap.put("uid", currentUserId);
                     questionMap.put("date", saveCurrenDate);
@@ -190,23 +196,24 @@ public class Ask extends AppCompatActivity {
                     questionMap.put("title", title);
                     questionMap.put("questionImage", downloadUrl);
                     questionMap.put("fullname", userFullName);
-
-                    QuestionRef.child(title + " - " + questionRandomName).updateChildren(questionMap)
+                    QuestionRef.child(questionRandomName + title).updateChildren(questionMap)
                             .addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task task) {
-                            if(task.isSuccessful()){
-                                openHomeScreen();
-                                Toast.makeText(Ask.this, "Question posted, XPs +1", Toast.LENGTH_SHORT).show();
-
-                                loadingBar.dismiss();
-                            } else {
-                                Toast.makeText(Ask.this, "Error Occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                                loadingBar.dismiss();
-                            }
-                        }
-                    });
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    if (task.isSuccessful()) {
+                                        openHomeScreen();
+                                        Toast.makeText(Ask.this, "Question posted, XPs +1", Toast.LENGTH_SHORT).show();
+                                /*int newPoint = Integer.parseInt(userXps) +1;
+                                        // If this line of code was activated the points updates but it ends in an infinite loop
+                                        UsersRef.child(currentUserId).child("points").setValue(newPoint);*/
+                                        loadingBar.dismiss();
+                                        return;
+                                    } else {
+                                        Toast.makeText(Ask.this, "Error Occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        loadingBar.dismiss();
+                                    }
+                                }
+                            });
                 }
             }
 
@@ -215,6 +222,7 @@ public class Ask extends AppCompatActivity {
 
             }
         });
+
 
     }
 
@@ -239,6 +247,8 @@ public class Ask extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
 
+                    userXps = dataSnapshot.child("points").getValue().toString();
+
                     HashMap questionMap = new HashMap();
                     questionMap.put("uid", currentUserId);
                     questionMap.put("date", saveCurrenDate);
@@ -252,11 +262,17 @@ public class Ask extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         openHomeScreen();
                                         Toast.makeText(Ask.this, "Question posted, XPs +1", Toast.LENGTH_SHORT).show();
 
+                                        /*int newPoint = Integer.parseInt(userXps) +1;
+                                        // If this line of code was activated the points updates but it ends in an infinite loop
+
+
+                                        UsersRef.child(currentUserId).child("points").setValue(newPoint);*/
                                         loadingBar.dismiss();
+
                                     } else {
                                         Toast.makeText(Ask.this, "Error Occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -289,7 +305,10 @@ public class Ask extends AppCompatActivity {
         if (requestCode == Gallery_pick && resultCode == RESULT_OK && data != null) {
             ImageUri = data.getData();
 
+            mQuestionImage.setImageURI(ImageUri);
             Toast.makeText(Ask.this, "Uploaded", Toast.LENGTH_SHORT).show();
+            picUpload = true;
+
            /* CropImage.activity()
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)

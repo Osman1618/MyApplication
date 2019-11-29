@@ -29,7 +29,7 @@ public class updateInfo extends AppCompatActivity {
     private Button done;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
-    private int xps;
+    private Integer xps;
 
     private ProgressDialog loadingBar;
 
