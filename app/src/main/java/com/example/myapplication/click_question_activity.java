@@ -1,13 +1,23 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,11 +27,13 @@ import com.squareup.picasso.Picasso;
 
 public class click_question_activity extends AppCompatActivity {
 
-    private String QuestionId;
+    private String QuestionId, currentUserId, databaseUserID, QuestionBody, QuestionTitle, QuestionImage;
     private ImageView editQuestionImage;
-    private Button editQuestion, deleteQuestion;
     private TextView editQuestionBody, editQuestionTitle, editQuestionDate, editQuestionTime, editQuestionUserName;
     private DatabaseReference QuestionRef;
+    private FirebaseAuth mAuth;
+    private FloatingActionButton delet, edit;
+    private FloatingActionMenu menue_delete_edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,35 +41,59 @@ public class click_question_activity extends AppCompatActivity {
         setContentView(R.layout.activity_click_question_activity);
 
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
         QuestionId = getIntent().getExtras().get("chose_question_id").toString();
 
         QuestionRef = FirebaseDatabase.getInstance().getReference().child("Questions").child(QuestionId);
 
         editQuestionImage = findViewById(R.id.edit_question_image);
-        editQuestion = findViewById(R.id.edit_question);
-        deleteQuestion = findViewById(R.id.delete_question);
+
         editQuestionBody = findViewById(R.id.edit_question_body);
         editQuestionDate = findViewById(R.id.edit_question_date);
         editQuestionTime = findViewById(R.id.edit_question_time);
         editQuestionUserName = findViewById(R.id.edit_question_user_name);
         editQuestionTitle = findViewById(R.id.edit_question_title);
 
+        delet = findViewById(R.id.delete);
+        edit = findViewById(R.id.edit);
+        menue_delete_edit = findViewById(R.id.menu_delete_edit);
+
+
+
+        menue_delete_edit.setVisibility(View.INVISIBLE);
+
 
         QuestionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                // String QuestionBody = dataSnapshot.child("body").getValue().toString();
-                  String QuestionImage = dataSnapshot.child("questionImage").getValue().toString();
+                 if(dataSnapshot.exists()){
+                     QuestionBody = dataSnapshot.child("body").getValue().toString();
+                     QuestionTitle = dataSnapshot.child("title").getValue().toString();
 
-                editQuestionBody.setText(dataSnapshot.child("body").getValue().toString());
-                editQuestionDate.setText(dataSnapshot.child("date").getValue().toString());
-                editQuestionTime.setText(dataSnapshot.child("time").getValue().toString());
-                editQuestionTitle.setText(dataSnapshot.child("title").getValue().toString());
-                editQuestionUserName.setText(dataSnapshot.child("fullname").getValue().toString());
+                     QuestionImage = dataSnapshot.child("questionImage").getValue().toString();
+                     databaseUserID = dataSnapshot.child("uid").getValue().toString();
 
-                  Picasso.get().load(QuestionImage).into(editQuestionImage);
+                     editQuestionBody.setText(QuestionBody);
+                     editQuestionDate.setText(dataSnapshot.child("date").getValue().toString());
+                     editQuestionTime.setText(dataSnapshot.child("time").getValue().toString());
+                     editQuestionTitle.setText(QuestionTitle);
+                     editQuestionUserName.setText(dataSnapshot.child("fullname").getValue().toString());
+                     Picasso.get().load(QuestionImage).into(editQuestionImage);
+                     if(currentUserId.equals(databaseUserID)){
 
+                         menue_delete_edit.setVisibility(View.VISIBLE);
+
+                     }
+
+                     edit.setOnClickListener(new View.OnClickListener() {
+                         @Override
+                         public void onClick(View v) {
+                             EditChosenQuestion(QuestionBody, QuestionTitle);
+                         }
+                     });
+                 }
             }
 
             @Override
@@ -66,6 +102,80 @@ public class click_question_activity extends AppCompatActivity {
             }
         });
 
+        delet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DeleteChosenQuestion();
+            }
+        });
+
+
+    }
+
+    private void EditChosenQuestion(String QuestionBody, String QuestionTitle){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(click_question_activity.this);
+        builder.setTitle("Edit Post");
+
+        final EditText newQuestionBody = new EditText(click_question_activity.this);
+        newQuestionBody.setText(QuestionBody);
+        builder.setView(newQuestionBody);
+
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                QuestionRef.child("body").setValue(newQuestionBody.getText().toString());
+                Toast.makeText(click_question_activity.this, "Question Updated Successfully", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.cancel();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.show();
+
+    }
+    private void DeleteChosenQuestion(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(click_question_activity.this);
+        builder.setTitle("Are you sure?");
+
+
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                QuestionRef.removeValue();
+                openQuestionFeed();
+                //Remember to decrease points.
+
+                Toast.makeText(click_question_activity.this, "Question deleted Successfully", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.cancel();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void openQuestionFeed(){
+        Intent intent = new Intent(click_question_activity.this, question_feed.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
 
     }
 

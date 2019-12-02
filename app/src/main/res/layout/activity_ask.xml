@@ -50,11 +50,13 @@
         android:background="@drawable/border"
         android:ems="10"
         android:hint="What do you want to ask?"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+
+        />
 
     <ImageButton
         android:id="@+id/back_home"

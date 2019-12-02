@@ -73,66 +73,47 @@ public class Signup extends AppCompatActivity {
         String email = newemail.getText().toString();
         String pwd = newPassword.getText().toString();
         String pwdConfirm = newPassWordConfirm.getText().toString();
-
-
         if (email.isEmpty()) {
             newemail.setError("Please type a kth email");
             newemail.requestFocus();
-
-
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             newemail.setError("Please enter a valid email");
             newemail.requestFocus();
-
         } else if (pwd.isEmpty()) {
             newPassword.setError("Please enter your password");
             newPassword.requestFocus();
-
-
         }else if ( !(pwd.equals(pwdConfirm))){
-
             newPassWordConfirm.setText("");
             newPassWordConfirm.setError("passwords must match");
             newPassWordConfirm.requestFocus();
         }
         else {
-
             loadingBar.setTitle("Sign up");
             loadingBar.setMessage("please wait, setting up your new account");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
-
-
             mFirebaseAuth.createUserWithEmailAndPassword(email, pwd)
                     .addOnCompleteListener(Signup.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-
                                 mFirebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-
                                         if (task.isSuccessful()) {
-
-                                            // video 13 in coding cafe list shows how to do the xPs with HashMap.
                                             updateUserInfo();
                                             Toast.makeText(Signup.this, "Registration Success" , Toast.LENGTH_SHORT).show();
                                             loadingBar.dismiss();
-
                                         } else {
                                             Toast.makeText(Signup.this, "Error occurred:" + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-
                                             loadingBar.dismiss();
                                         }
                                     }
                                 });
-
                             } else {
                                 Toast.makeText(Signup.this, "SignUp Unsuccessful:" + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                 loadingBar.dismiss();
                             }
-
                         }
                     });
         }
