@@ -122,7 +122,8 @@
             android:layout_height="200dp"
             android:layout_margin="3dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"

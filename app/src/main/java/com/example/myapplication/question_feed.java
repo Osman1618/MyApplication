@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,8 @@ public class question_feed extends AppCompatActivity {
     private StorageReference QuestionImageRef;
     private Uri ImageUri;
     private int points;
+    private static final String TAG = "question_feed";
+
     String currentUserId;
 
     Boolean likeChecker = false;
@@ -113,7 +116,9 @@ public class question_feed extends AppCompatActivity {
                         holder.questionBody.setText(model.getBody());
                         holder.setLikeButtonStatus(QuestionKey);
                         Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
-                       // Picasso.get().load(model.getQuestionImage()).resize(200, 200).into(holder.questionimage);
+                        Log.i(TAG, "url in picasso library " + model.getQuestionImage().toString());
+
+                        //Picasso.get().load(model.getQuestionImage()).resize(200, 200).into(holder.questionimage);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

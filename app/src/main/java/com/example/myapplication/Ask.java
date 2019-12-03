@@ -7,7 +7,7 @@ XPs : updates.
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.util.Log;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -46,10 +46,11 @@ public class Ask extends AppCompatActivity {
     private Button upload, submit;
     private EditText questionBody, questionTitle;
     private Switch anonymous;
-    private final static Boolean picUpload = true;
+    private Boolean picUpload = false;
 
     private final static int Gallery_pick = 1;
 
+    private static final String TAG = "Ask";
     private ProgressDialog loadingBar;
     private StorageReference questionImagesRef;
     private String body, title;
@@ -115,9 +116,14 @@ public class Ask extends AppCompatActivity {
 
             }
         });
+
     }
 
     public void ValidateQuestionInfo() {
+        Log.i(TAG, "MyClass.getView() — get item number for downloadUrl" + downloadUrl);
+        Log.i(TAG, "MyClass.getView() — get item numberfor picUpload:   " + picUpload.toString());
+
+
         body = questionBody.getText().toString();
         title = questionTitle.getText().toString();
         if (TextUtils.isEmpty(title)) {
@@ -128,20 +134,23 @@ public class Ask extends AppCompatActivity {
             questionBody.setError("Required");
             questionBody.requestFocus();
             Toast.makeText(Ask.this, "Please write a description to your question", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (picUpload) {
             loadingBar.setTitle("Question submit");
             loadingBar.setMessage("Your question is being posted");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
             StoringImagetoFireBaseStorage();
-        } /*else {
+            Log.i(TAG, "MyClass.getView() — get item number After picUpload" + downloadUrl);
+
+
+        } else {
             loadingBar.setTitle("Question submit");
             loadingBar.setMessage("Your question is being posted");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
             savingQuestionInformation();
 
-        }*/
+        }
 
 
     }
@@ -156,22 +165,30 @@ public class Ask extends AppCompatActivity {
         saveCurrentTime = currentTime.format(gettime.getTime());
         questionRandomName = saveCurrenDate + saveCurrentTime;
 
+        Log.i(TAG, "MyClass.getView() — get item number in storage " + downloadUrl);
         StorageReference filePath = questionImagesRef.child("Question Images").child(ImageUri.getLastPathSegment() + questionRandomName + ".jpg");
+
+        Log.i(TAG, "File Path After " + filePath);
 
         filePath.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                Log.i(TAG, "FilePath after onComplete " + task.toString());
+
                 if (task.isSuccessful()) {
                     downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
                     Toast.makeText(Ask.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
 
                     savingQuestionInformation();
+                    Log.i(TAG, "downlpadUrl after  " + downloadUrl);
                 } else {
                     Toast.makeText(Ask.this, "Error occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
             }
         });
+
+
 
     }
 
@@ -185,10 +202,13 @@ public class Ask extends AppCompatActivity {
         questionRandomName = saveCurrenDate + saveCurrentTime;
 
 
-        UsersRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    if(!picUpload){
+                        downloadUrl = "There is no image for this question";
+                    }
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
                     userXps = dataSnapshot.child("points").getValue().toString();
                     HashMap questionMap = new HashMap();
@@ -199,16 +219,18 @@ public class Ask extends AppCompatActivity {
                     questionMap.put("title", title);
                     questionMap.put("questionImage", downloadUrl);
                     questionMap.put("fullname", userFullName);
-                    QuestionRef.child(currentUserId+questionRandomName).updateChildren(questionMap)
+                    QuestionRef.child(questionRandomName + currentUserId + title).updateChildren(questionMap)
                             .addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
                                     if (task.isSuccessful()) {
                                         openHomeScreen();
                                         Toast.makeText(Ask.this, "Question posted, XPs +1", Toast.LENGTH_SHORT).show();
-                                        int newPoint = Integer.parseInt(userXps) + 1;
-                                        UsersRef.child(currentUserId).child("points").setValue(newPoint);
+                                      //  int newPoint = Integer.parseInt(userXps) + 1;
+                                      //  UsersRef.child(currentUserId).child("points").setValue(newPoint);
                                         loadingBar.dismiss();
+                                        Log.i(TAG, "downlpadUrl after  storing question in database " + downloadUrl);
+
                                         return;
                                     } else {
                                         Toast.makeText(Ask.this, "Error Occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -217,13 +239,18 @@ public class Ask extends AppCompatActivity {
                                 }
                             });
                 }
+                Log.i(TAG, "downlpadUrl after  storing question in database before onCancelled " + downloadUrl);
+
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+        Log.i(TAG, "downlpadUrl after  storing question in database after onCancelled " + downloadUrl);
+
     }
 
     public void savingQuestionInformationWithNoPic() {
@@ -305,6 +332,7 @@ public class Ask extends AppCompatActivity {
             mQuestionImage.setImageURI(ImageUri);
             Toast.makeText(Ask.this, "Image Uploaded", Toast.LENGTH_LONG).show();
 
+            picUpload = true;
         }
     }
 

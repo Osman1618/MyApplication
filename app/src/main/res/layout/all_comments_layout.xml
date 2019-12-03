@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -15,7 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
 
             >
@@ -35,7 +37,7 @@
                 android:id="@+id/simple_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="   Commented on:"
+                android:text="   Answered on: "
                 android:textColor="@color/Black"
                 android:textSize="12sp"
 
@@ -82,6 +84,53 @@
                 android:textStyle="bold"
 
                 android:gravity="end" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <ImageButton
+                android:id="@+id/correct_answer_button"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/border"
+                android:src="@drawable/ic_correct_not_chosen"
+                tools:ignore="VectorDrawableCompat" />
+
+
+            <TextView
+                android:id="@+id/display_correct_markings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="1 says correct"
+                android:textColor="@color/Black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+
+            <ImageButton
+                android:id="@+id/wrong_answer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/border"
+                android:src="@drawable/ic_wrong_not_chosen"
+                tools:ignore="VectorDrawableCompat" />
+            <TextView
+                android:id="@+id/display_wrong_markings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0 says wrong"
+                android:textColor="@color/Black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>
