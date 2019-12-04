@@ -83,7 +83,6 @@ public class question_feed extends AppCompatActivity {
         });
     }
 
-
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -117,16 +116,16 @@ public class question_feed extends AppCompatActivity {
                     @Override
                     protected void onBindViewHolder(@NonNull QuestionViewHolder holder, final int position, @NonNull Question model) {
                         final String QuestionKey;
-                        QuestionKey = (getRef(position).getKey());
+                        QuestionKey = getRef(position).getKey();
                         holder.username.setText(model.getFullname());
                         holder.questionDate.setText("  " + model.getDate());
                         holder.questionTime.setText("  " + model.getTime());
                         holder.questionTitle.setText(model.getTitle());
                         holder.questionBody.setText(model.getBody());
                         holder.setLikeButtonStatus(QuestionKey);
-                        Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
+                       //Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
 
-                        //Picasso.get().load(model.getQuestionImage()).resize(200, 200).into(holder.questionimage);
+                        Picasso.get().load(model.getQuestionImage()).fit().centerInside().into(holder.questionimage);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -212,7 +211,6 @@ public class question_feed extends AppCompatActivity {
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         }
-
 
         public void setLikeButtonStatus(final String QuestionKey) {
             likesRef.addValueEventListener(new ValueEventListener() {

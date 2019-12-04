@@ -7,12 +7,13 @@
         android:id="@+id/nav_menue"
         android:icon="@drawable/ic_menu_black_24dp"
         android:title="@null"
+
    />
 
     <item
         android:id="@+id/nav_kth"
         android:icon="@drawable/logo"
-        android:title="@null"/>
+        android:title="@null" />
 
 
 

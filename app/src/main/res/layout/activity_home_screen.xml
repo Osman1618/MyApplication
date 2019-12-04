@@ -9,7 +9,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_navigation"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="0dp"
         android:background="?android:attr/windowBackground"
@@ -89,19 +89,6 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:text="MY QUESTIONS"
-            android:background="@android:drawable/dialog_holo_light_frame"/>
-
-        <Button
-            android:id="@+id/courses"
-            android:layout_width="200dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="475dp"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:text="COURSES"
             android:background="@android:drawable/dialog_holo_light_frame"/>
 
     </FrameLayout>

@@ -22,13 +22,22 @@
 
     </TextView>
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_user_leader_board"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/leader_board"
+        android:background="@drawable/black_border"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search User"></androidx.appcompat.widget.SearchView>
+
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@id/leader_board">
+        android:layout_below="@id/search_user_leader_board">
 
 
         <androidx.recyclerview.widget.RecyclerView
