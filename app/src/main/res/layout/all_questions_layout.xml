@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#1D205B8F"
+    android:fadingEdge="horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,8 +13,9 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/border"
-        android:orientation="vertical">
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:outlineSpotShadowColor="@color/Black">
 
 
         <LinearLayout
@@ -122,8 +125,7 @@
             android:layout_height="200dp"
             android:layout_margin="3dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            />
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -159,12 +161,13 @@
                 android:background="@drawable/border"
                 android:src="@drawable/ic_comment_black_24dp"
                 tools:ignore="VectorDrawableCompat" />
+
             <TextView
                 android:id="@+id/display_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Comments"
+                android:text="Answers"
                 android:textColor="@color/Black"
                 android:textSize="14sp"
                 android:textStyle="bold" />

@@ -105,7 +105,7 @@ public class Ask extends AppCompatActivity {
         backHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backhome();
+                onBackPressed();
             }
         });
 
@@ -120,8 +120,6 @@ public class Ask extends AppCompatActivity {
     }
 
     public void ValidateQuestionInfo() {
-        Log.i(TAG, "MyClass.getView() — get item number for downloadUrl" + downloadUrl);
-        Log.i(TAG, "MyClass.getView() — get item numberfor picUpload:   " + picUpload.toString());
 
 
         body = questionBody.getText().toString();
@@ -140,7 +138,6 @@ public class Ask extends AppCompatActivity {
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
             StoringImagetoFireBaseStorage();
-            Log.i(TAG, "MyClass.getView() — get item number After picUpload" + downloadUrl);
 
 
         } else {
@@ -154,6 +151,26 @@ public class Ask extends AppCompatActivity {
 
 
     }
+    public void openGallery() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, Gallery_pick);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Gallery_pick && resultCode == RESULT_OK && data != null) {
+            ImageUri = data.getData();
+
+            mQuestionImage.setImageURI(ImageUri);
+            Toast.makeText(Ask.this, "Image Uploaded", Toast.LENGTH_LONG).show();
+
+            picUpload = true;
+        }
+    }
 
     public void StoringImagetoFireBaseStorage() {
 
@@ -165,22 +182,18 @@ public class Ask extends AppCompatActivity {
         saveCurrentTime = currentTime.format(gettime.getTime());
         questionRandomName = saveCurrenDate + saveCurrentTime;
 
-        Log.i(TAG, "MyClass.getView() — get item number in storage " + downloadUrl);
         StorageReference filePath = questionImagesRef.child("Question Images").child(ImageUri.getLastPathSegment() + questionRandomName + ".jpg");
 
-        Log.i(TAG, "File Path After " + filePath);
 
         filePath.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                Log.i(TAG, "FilePath after onComplete " + task.toString());
 
                 if (task.isSuccessful()) {
                     downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
                     Toast.makeText(Ask.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
 
                     savingQuestionInformation();
-                    Log.i(TAG, "downlpadUrl after  " + downloadUrl);
                 } else {
                     Toast.makeText(Ask.this, "Error occurred:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -202,7 +215,7 @@ public class Ask extends AppCompatActivity {
         questionRandomName = saveCurrenDate + saveCurrentTime;
 
 
-        UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+        UsersRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -226,10 +239,9 @@ public class Ask extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         openHomeScreen();
                                         Toast.makeText(Ask.this, "Question posted, XPs +1", Toast.LENGTH_SHORT).show();
-                                      //  int newPoint = Integer.parseInt(userXps) + 1;
-                                      //  UsersRef.child(currentUserId).child("points").setValue(newPoint);
+                                        int newPoint = Integer.parseInt(userXps) + 1;
+                                        UsersRef.child(currentUserId).child("points").setValue(newPoint);
                                         loadingBar.dismiss();
-                                        Log.i(TAG, "downlpadUrl after  storing question in database " + downloadUrl);
 
                                         return;
                                     } else {
@@ -239,7 +251,6 @@ public class Ask extends AppCompatActivity {
                                 }
                             });
                 }
-                Log.i(TAG, "downlpadUrl after  storing question in database before onCancelled " + downloadUrl);
 
             }
 
@@ -249,7 +260,6 @@ public class Ask extends AppCompatActivity {
 
             }
         });
-        Log.i(TAG, "downlpadUrl after  storing question in database after onCancelled " + downloadUrl);
 
     }
 
@@ -275,7 +285,6 @@ public class Ask extends AppCompatActivity {
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
 
                     userXps = dataSnapshot.child("points").getValue().toString();
-
                     HashMap questionMap = new HashMap();
                     questionMap.put("uid", currentUserId);
                     questionMap.put("date", saveCurrenDate);
@@ -284,7 +293,6 @@ public class Ask extends AppCompatActivity {
                     questionMap.put("title", title);
                     questionMap.put("questionImage", "None");
                     questionMap.put("fullname", userFullName);
-
                     QuestionRef.child(title + " - " + questionRandomName).updateChildren(questionMap)
                             .addOnCompleteListener(new OnCompleteListener() {
                                 @Override
@@ -315,28 +323,6 @@ public class Ask extends AppCompatActivity {
 
     }
 
-    public void openGallery() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, Gallery_pick);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == Gallery_pick && resultCode == RESULT_OK && data != null) {
-            ImageUri = data.getData();
-
-            mQuestionImage.setImageURI(ImageUri);
-            Toast.makeText(Ask.this, "Image Uploaded", Toast.LENGTH_LONG).show();
-
-            picUpload = true;
-        }
-    }
-
-
 
     public void backhome() {
         Intent intent = new Intent(this, HomeScreen.class);
@@ -352,5 +338,12 @@ public class Ask extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+
     }
 }

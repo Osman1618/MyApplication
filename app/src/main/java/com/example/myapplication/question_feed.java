@@ -42,6 +42,7 @@ public class question_feed extends AppCompatActivity {
     private StorageReference QuestionImageRef;
     private Uri ImageUri;
     private int points;
+    private ImageButton newQuestion;
     private static final String TAG = "question_feed";
 
     String currentUserId;
@@ -72,6 +73,14 @@ public class question_feed extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
+        newQuestion = findViewById(R.id.new_question_icon);
+
+        newQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAskScreen();
+            }
+        });
     }
 
 
@@ -116,7 +125,6 @@ public class question_feed extends AppCompatActivity {
                         holder.questionBody.setText(model.getBody());
                         holder.setLikeButtonStatus(QuestionKey);
                         Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
-                        Log.i(TAG, "url in picasso library " + model.getQuestionImage().toString());
 
                         //Picasso.get().load(model.getQuestionImage()).resize(200, 200).into(holder.questionimage);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -300,6 +308,14 @@ public class question_feed extends AppCompatActivity {
         startActivity(intent);
 
     }
+    public void openAskScreen(){
+        Intent intent = new Intent(this, Ask.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }
