@@ -16,8 +16,11 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -49,13 +52,27 @@ public class updateInfo extends AppCompatActivity {
         programCode = findViewById(R.id.programCode);
         done = findViewById(R.id.done);
 
-        xps = 0;
+        UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild("points")){
+                    xps = Integer.parseInt(dataSnapshot.child("points").getValue().toString()) ;
+                } else {
+                    xps = 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 saveUserInformation();
             }
         });
@@ -109,10 +126,17 @@ public class updateInfo extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        toLoginActivity();
+
                         Toast.makeText(updateInfo.this, "Information updated", Toast.LENGTH_SHORT).show();
 
                         loadingBar.dismiss();
+                        if(mAuth.getCurrentUser().isEmailVerified()){
+                            openHomeScreen();
+                        } else {
+                            toLoginActivity();
+
+                        }
+
                     } else {
                         Toast.makeText(updateInfo.this, "Error Occurred" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -126,6 +150,11 @@ public class updateInfo extends AppCompatActivity {
 
     }
 
+    private void openHomeScreen(){
+        Intent intent = new Intent (updateInfo.this, HomeScreen.class);
+        startActivity(intent);
+        finish();
+    }
     private void toLoginActivity() {
         Intent intent = new Intent(updateInfo.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

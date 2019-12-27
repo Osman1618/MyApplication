@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,7 @@ public class question_feed extends AppCompatActivity {
     private int points;
     private ImageButton newQuestion;
     private static final String TAG = "question_feed";
+    private SearchView searchViewQuestionFeed;
 
     String currentUserId;
 
@@ -74,11 +76,32 @@ public class question_feed extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         newQuestion = findViewById(R.id.new_question_icon);
-
+        searchViewQuestionFeed = findViewById(R.id.search_bar_question_feed);
         newQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openAskScreen();
+            }
+        });
+        searchViewQuestionFeed.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(query.isEmpty()){
+                    QuestionFeedDefault();
+                } else {
+                    QuestionFeedSearch(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText.isEmpty()){
+                    QuestionFeedDefault();
+                } else {
+                    QuestionFeedSearch(newText);
+                }
+                return false;
             }
         });
     }
@@ -108,9 +131,13 @@ public class question_feed extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+       QuestionFeedDefault();
+    }
+
+    private void QuestionFeedDefault(){
         FirebaseRecyclerOptions<Question> options =
                 new FirebaseRecyclerOptions.Builder<Question>()
-                        .setQuery(QuestionRef, Question.class).build();
+                        .setQuery(QuestionRef,Question.class).build();
         FirebaseRecyclerAdapter<Question, QuestionViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Question, QuestionViewHolder>(options) {
                     @Override
@@ -122,8 +149,10 @@ public class question_feed extends AppCompatActivity {
                         holder.questionTime.setText("  " + model.getTime());
                         holder.questionTitle.setText(model.getTitle());
                         holder.questionBody.setText(model.getBody());
+                        holder.corseCode.setText(model.getCoursecode());
+
                         holder.setLikeButtonStatus(QuestionKey);
-                       //Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
+                        //Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
 
                         Picasso.get().load(model.getQuestionImage()).fit().centerInside().into(holder.questionimage);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -177,14 +206,83 @@ public class question_feed extends AppCompatActivity {
                 };
         questionList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
-
     }
 
+    private void QuestionFeedSearch(String newText){
+        FirebaseRecyclerOptions<Question> options =
+                new FirebaseRecyclerOptions.Builder<Question>()
+                        .setQuery(QuestionRef.orderByChild("coursecode").startAt(newText.toLowerCase()).endAt(newText.toLowerCase()+"\uf8ff")
+                                , Question.class).build();
+        FirebaseRecyclerAdapter<Question, QuestionViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Question, QuestionViewHolder>(options) {
+                    @Override
+                    protected void onBindViewHolder(@NonNull QuestionViewHolder holder, final int position, @NonNull Question model) {
+                        final String QuestionKey;
+                        QuestionKey = getRef(position).getKey();
+                        holder.username.setText(model.getFullname());
+                        holder.questionDate.setText("  " + model.getDate());
+                        holder.questionTime.setText("  " + model.getTime());
+                        holder.questionTitle.setText(model.getTitle());
+                        holder.questionBody.setText(model.getBody());
+                        holder.corseCode.setText(model.getCoursecode());
+                        holder.setLikeButtonStatus(QuestionKey);
+                        //Picasso.get().load(model.getQuestionImage()).into(holder.questionimage);
+                        Picasso.get().load(model.getQuestionImage()).fit().centerInside().into(holder.questionimage);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //  Toast.makeText(question_feed.this, chose_question_id, Toast.LENGTH_LONG).show();
+                                Intent chosePostIntent = new Intent(question_feed.this, click_question_activity.class);
+                                chosePostIntent.putExtra("chose_question_id", QuestionKey);
+                                startActivity(chosePostIntent);
+                            }
+                        });
+                        holder.commentQuestion.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent commentsIntent = new Intent(question_feed.this, CommentsActivity.class);
+                                commentsIntent.putExtra("chose_question_id", QuestionKey);
+                                startActivity(commentsIntent);
+                            }
+                        });
+                        holder.likeQuesionButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                likeChecker = true;
+                                likesRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (likeChecker.equals(true)) {
+                                            if (dataSnapshot.child(QuestionKey).hasChild(currentUserId)) {
+                                                likesRef.child(QuestionKey).child(currentUserId).removeValue();
+                                                likeChecker = false;
+                                            } else {
+                                                likesRef.child(QuestionKey).child(currentUserId).setValue(true);
+                                                likeChecker = false;
+                                            }
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    @NonNull
+                    @Override
+                    public QuestionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_questions_layout, parent, false);
+                        QuestionViewHolder viewHolder = new QuestionViewHolder(view);
+                        return viewHolder;
+                    }
+                };
+        questionList.setAdapter(firebaseRecyclerAdapter);
+        firebaseRecyclerAdapter.startListening();
+    }
     public static class QuestionViewHolder extends RecyclerView.ViewHolder {
-
-
         View mView;
-        TextView username, questionDate, questionTime, questionTitle, questionBody;
+        TextView username, questionDate, questionTime, questionTitle, questionBody, corseCode;
         ImageView questionimage;
         ImageButton likeQuesionButton, commentQuestion;
         TextView displayLikes;
@@ -200,7 +298,6 @@ public class question_feed extends AppCompatActivity {
             commentQuestion = (ImageButton) mView.findViewById(R.id.comment_button);
             displayLikes = mView.findViewById(R.id.display_likes);
 
-
             username = mView.findViewById(R.id.question_user_name);
             questionDate = mView.findViewById(R.id.question_date);
             questionTime = mView.findViewById(R.id.question_time);
@@ -209,7 +306,7 @@ public class question_feed extends AppCompatActivity {
             questionimage = mView.findViewById(R.id.display_question_image);
             likesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+            corseCode = mView.findViewById(R.id.course_Code);
         }
 
         public void setLikeButtonStatus(final String QuestionKey) {

@@ -25,11 +25,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class LeaderBoard extends AppCompatActivity {
     private RecyclerView LeaderBoardRecyclerList;
     private DatabaseReference UsersRef, likesRef;
     private FirebaseDatabase mDataBase;
     private int size;
+    private Map<String, String> usersResultHashMap = new HashMap();
+
     private androidx.appcompat.widget.SearchView searchUserLeaderBoard;
     private static final String TAG = "LeaderBoard";
 
@@ -63,50 +70,81 @@ public class LeaderBoard extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.i(TAG, "Query Text after query submit:  " + query);
-                if(query.isEmpty()){
+                if (query.isEmpty()) {
                     LeaderBoardDefult();
                 } else {
                     LeaderBoardSearch(query);
                 }
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.i(TAG, "Query Text before query change:  " + newText);
-                if(newText.isEmpty()){
+                if (newText.isEmpty()) {
                     LeaderBoardDefult();
                 } else {
                     LeaderBoardSearch(newText);
-                }                return false;
+                }
+                return false;
             }
         });
     }
-    private void LeaderBoardSearch(String searchText) {
-        final FirebaseRecyclerOptions<User> options =
-                new FirebaseRecyclerOptions.Builder<User>()
-                        .setQuery(UsersRef.orderByChild("fullname").startAt(searchText).endAt(searchText + "\uf8ff")
-                                , User.class).build();
-        Log.i(TAG, "Users Ref inside leaderBoardSearch " + UsersRef);
-        final FirebaseRecyclerAdapter<User, LeaderBoardViewHolder> adapter =
-                new FirebaseRecyclerAdapter<User, LeaderBoardViewHolder>(options) {
-                    @Override
-                    protected void onBindViewHolder(@NonNull LeaderBoardViewHolder holder, int position, @NonNull User model) {
-                        holder.userNAme.setText(model.getFullname());
-                        holder.points.setText(Integer.toString(model.getPoints()));
-                        holder.placement.setText("#" + Integer.toString(size - position));
-                        Log.i(TAG, "UserName in the LeaderBoard:  " + model.getFullname());
+
+    private void LeaderBoardSearch(final String searchText) {
+
+        UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               // List<String> list = new ArrayList<>(0);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String fullname = ds.child("fullname").getValue(String.class);
+
+                    if(fullname.toLowerCase().contains(searchText.toLowerCase())){
+
+                        usersResultHashMap.put("username",ds.child("username").getValue(String.class));
+                        usersResultHashMap.put("fullname", ds.child("fullname").getValue(String.class));
+                        usersResultHashMap.put("programcode", ds.child("programcode").getValue(String.class));
+                        usersResultHashMap.put("programname", ds.child("programname").getValue(String.class));
+                        usersResultHashMap.put("points", ds.child("points").getValue().toString());
                     }
 
-                    @NonNull
-                    @Override
-                    public LeaderBoardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leader_board_user, parent, false);
-                        LeaderBoardViewHolder viewHolder = new LeaderBoardViewHolder(view);
-                        return viewHolder;
-                    }
-                };
-        LeaderBoardRecyclerList.setAdapter(adapter);
-        adapter.startListening();
+                }
+                final FirebaseRecyclerOptions<User> options =
+                        new FirebaseRecyclerOptions.Builder<User>()
+                                .setQuery(UsersRef.limitToFirst(1)
+                                        , User.class).build();
+                Log.i(TAG, "Users Ref inside leaderBoardSearch " + UsersRef);
+                final FirebaseRecyclerAdapter<User, LeaderBoardViewHolder> adapter =
+                        new FirebaseRecyclerAdapter<User, LeaderBoardViewHolder>(options) {
+                            @Override
+                            protected void onBindViewHolder(@NonNull LeaderBoardViewHolder holder, int position, @NonNull User model) {
+                                holder.userNAme.setText(usersResultHashMap.get("fullname"));
+                                holder.points.setText(usersResultHashMap.get("points"));
+                                holder.placement.setText("#" + Integer.toString(size - position));
+                                Log.i(TAG, "UserName in the LeaderBoard:  " + model.getFullname());
+                            }
+
+                            @NonNull
+                            @Override
+                            public LeaderBoardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leader_board_user, parent, false);
+                                LeaderBoardViewHolder viewHolder = new LeaderBoardViewHolder(view);
+                                return viewHolder;
+                            }
+                        };
+                LeaderBoardRecyclerList.setAdapter(adapter);
+                adapter.startListening();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private void LeaderBoardDefult() {
@@ -162,7 +200,7 @@ public class LeaderBoard extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.nav_home:
                     openHomeScreen();
                     break;

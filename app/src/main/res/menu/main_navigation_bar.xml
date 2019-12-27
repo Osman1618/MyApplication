@@ -13,13 +13,14 @@
     <item
         android:id="@+id/nav_kth"
         android:icon="@drawable/logo"
-        android:title="@null" />
+        android:title="@null"
+        />
 
 
 
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
+        android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@null" />
 
 </menu>

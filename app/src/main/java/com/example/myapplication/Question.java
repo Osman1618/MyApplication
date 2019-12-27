@@ -2,13 +2,13 @@ package com.example.myapplication;
 
 public class Question
 {
-    public String uid, title, time, questionImage, fullname, date, body;
+    public String uid, title, time, questionImage, fullname, date, body, coursecode ;
 
     public Question (){
 
     }
 
-    public Question(String uid, String title, String time, String questionImage, String fullname, String date, String body) {
+    public Question(String uid, String title, String time, String questionImage, String fullname, String date, String body, String coursecode) {
         this.uid = uid;
         this.title = title;
         this.time = time;
@@ -16,6 +16,7 @@ public class Question
         this.fullname = fullname;
         this.date = date;
         this.body = body;
+        this.coursecode = coursecode;
     }
 
 
@@ -27,6 +28,14 @@ public class Question
         this.uid = uid;
     }
 
+    public String getCoursecode() {
+        return coursecode;
+    }
+
+    public void setCoursecode(String coursecode) {
+        this.coursecode = coursecode;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -34,7 +43,6 @@ public class Question
     public void setTitle(String title) {
         this.title = title;
     }
-
     public String getTime() {
         return time;
     }

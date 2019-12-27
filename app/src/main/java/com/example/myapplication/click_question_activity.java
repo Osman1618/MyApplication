@@ -27,13 +27,14 @@ import com.squareup.picasso.Picasso;
 
 public class click_question_activity extends AppCompatActivity {
 
-    private String QuestionId, currentUserId, databaseUserID, QuestionBody, QuestionTitle, QuestionImage;
+    private String QuestionId, currentUserId, databaseUserID, QuestionBody, QuestionTitle, QuestionImage, CourseCode;
     private ImageView editQuestionImage;
-    private TextView editQuestionBody, editQuestionTitle, editQuestionDate, editQuestionTime, editQuestionUserName;
-    private DatabaseReference QuestionRef;
+    private TextView editQuestionBody, editQuestionTitle, editQuestionDate, editQuestionTime, editQuestionUserName, editCourseCode;
+    private DatabaseReference QuestionRef, mUsersRef;
     private FirebaseAuth mAuth;
     private FloatingActionButton delet, edit;
     private FloatingActionMenu menue_delete_edit;
+    private int userXps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class click_question_activity extends AppCompatActivity {
 
         QuestionRef = FirebaseDatabase.getInstance().getReference().child("Questions").child(QuestionId);
 
+        mUsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         editQuestionImage = findViewById(R.id.edit_question_image);
 
         editQuestionBody = findViewById(R.id.edit_question_body);
@@ -54,13 +56,11 @@ public class click_question_activity extends AppCompatActivity {
         editQuestionTime = findViewById(R.id.edit_question_time);
         editQuestionUserName = findViewById(R.id.edit_question_user_name);
         editQuestionTitle = findViewById(R.id.edit_question_title);
+        editCourseCode = findViewById(R.id.edit_course_code);
 
         delet = findViewById(R.id.delete);
         edit = findViewById(R.id.edit);
         menue_delete_edit = findViewById(R.id.menu_delete_edit);
-
-
-
         menue_delete_edit.setVisibility(View.INVISIBLE);
 
 
@@ -72,9 +72,10 @@ public class click_question_activity extends AppCompatActivity {
                      QuestionBody = dataSnapshot.child("body").getValue().toString();
                      QuestionTitle = dataSnapshot.child("title").getValue().toString();
 
+                     CourseCode = dataSnapshot.child("coursecode").getValue().toString();
                      QuestionImage = dataSnapshot.child("questionImage").getValue().toString();
                      databaseUserID = dataSnapshot.child("uid").getValue().toString();
-
+                     editCourseCode.setText(CourseCode);
                      editQuestionBody.setText(QuestionBody);
                      editQuestionDate.setText(dataSnapshot.child("date").getValue().toString());
                      editQuestionTime.setText(dataSnapshot.child("time").getValue().toString());
@@ -154,6 +155,19 @@ public class click_question_activity extends AppCompatActivity {
 
                 QuestionRef.removeValue();
                 openQuestionFeed();
+                mUsersRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        userXps = Integer.parseInt(dataSnapshot.child("points").getValue().toString() );
+                        mUsersRef.child(currentUserId).child("points").setValue(userXps - 1);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 //Remember to decrease points.
 
                 Toast.makeText(click_question_activity.this, "Question deleted Successfully", Toast.LENGTH_SHORT).show();

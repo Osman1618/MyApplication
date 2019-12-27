@@ -39,6 +39,7 @@ public class CommentsActivity extends AppCompatActivity {
     private String Post_Key, currentUserId, saveCurrentDate, saveCurrentTime, commentRandomName;
     private DatabaseReference UsersRef, QuestionsRef;
     private FirebaseAuth mAuth;
+    private Boolean correctAnswerChecker = false, wrongAnswerChecker = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,14 +100,11 @@ public class CommentsActivity extends AppCompatActivity {
                     @Override
                     protected void onBindViewHolder(@NonNull CommentsViewHolder holder, int position, @NonNull Comments model) {
 
-
                         holder.username.setText(model.getUsername());
                         holder.commentTime.setText(model.getTime());
                         holder.commentDate.setText("  " + model.getDate());
                         holder.commentBody.setText(model.getComment());
-
                     }
-
                     @NonNull
                     @Override
                     public CommentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -123,6 +121,8 @@ public class CommentsActivity extends AppCompatActivity {
         View mView;
         TextView username, commentDate, commentTime, commentBody;
 
+        ImageButton correctAnswer, wrongAnswer;
+
         public CommentsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
@@ -131,10 +131,11 @@ public class CommentsActivity extends AppCompatActivity {
             commentDate = mView.findViewById(R.id.comment_date);
             commentTime = mView.findViewById(R.id.comment_time);
             commentBody = mView.findViewById(R.id.comment_body);
+            correctAnswer = mView.findViewById(R.id.correct_answer_button);
+            wrongAnswer = mView.findViewById(R.id.wrong_answer_button);
 
         }
     }
-
     public void validateComment(String userName) {
         String commentText = CommentInputText.getText().toString();
         if (TextUtils.isEmpty(commentText)) {

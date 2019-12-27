@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CommentsActivity"></activity>
+        <activity android:name=".MyQuestions"></activity>
+        <activity android:name=".CommentsActivity" />
         <activity android:name=".click_question_activity" />
         <activity android:name=".question_feed" />
         <activity android:name=".updateInfo" />

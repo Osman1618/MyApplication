@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".question_feed"
-    android:background="#FFFFFF">
-
+    tools:context=".MyQuestions">
 
 
     <LinearLayout
@@ -17,45 +15,31 @@
 
 
         <FrameLayout
-            android:id="@+id/head_container"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_above="@+id/main_container"
             android:background="#1D205B8F"
             android:padding="7dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
 
                 <androidx.appcompat.widget.SearchView
-                    android:id="@+id/search_bar_question_feed"
+                    android:id="@+id/search_bar_my_question_feed"
                     android:layout_width="350dp"
-                    app:defaultQueryHint="Search course code"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:padding="7dp"
-                    android:queryHint="Search course code"
+                    android:queryHint="Search questions"
                     android:iconifiedByDefault="false"
                     android:background="@drawable/border"
 
                     > </androidx.appcompat.widget.SearchView>
 
-                <ImageButton
-                    android:id="@+id/new_question_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/new_question"
-                    android:padding="7dp" />
-            </LinearLayout>
+
 
 
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/bottom_navigation"
@@ -66,14 +50,13 @@
 
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/all_questions_list"
+                android:id="@+id/all_my_questions_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:duplicateParentState="true" />
         </FrameLayout>
 
     </LinearLayout>
-
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

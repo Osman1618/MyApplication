@@ -95,6 +95,18 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/course_Code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:padding="3dp"
+            android:text="Course Code"
+            android:textColor="@color/Black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/question_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

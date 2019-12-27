@@ -28,9 +28,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/leader_board"
         android:background="@drawable/black_border"
+        app:defaultQueryHint="Search name"
         android:iconifiedByDefault="false"
-        android:queryHint="Search User"></androidx.appcompat.widget.SearchView>
+        android:queryHint="Search name">
 
+    </androidx.appcompat.widget.SearchView>
 
     <FrameLayout
         android:id="@+id/fragment_container"

@@ -44,8 +44,7 @@ public class Ask extends AppCompatActivity {
 
     private ImageButton backHome;
     private Button upload, submit;
-    private EditText questionBody, questionTitle;
-    private Switch anonymous;
+    private EditText questionBody, questionTitle, courseCode;
     private Boolean picUpload = false;
 
     private final static int Gallery_pick = 1;
@@ -53,7 +52,7 @@ public class Ask extends AppCompatActivity {
     private static final String TAG = "Ask";
     private ProgressDialog loadingBar;
     private StorageReference questionImagesRef;
-    private String body, title;
+    private String body, title, code;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
     private DatabaseReference QuestionRef;
@@ -73,7 +72,6 @@ public class Ask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ask);
 
-
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         questionImagesRef = FirebaseStorage.getInstance().getReference();
@@ -86,8 +84,7 @@ public class Ask extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         questionBody = findViewById(R.id.question);
         questionTitle = findViewById(R.id.question_title);
-        anonymous = findViewById(R.id.anonymous);
-
+        courseCode = findViewById(R.id.question_course_tag);
         mQuestionImage = findViewById(R.id.imageView);
         questionId = questionTitle.getText().toString();
 
@@ -98,7 +95,6 @@ public class Ask extends AppCompatActivity {
 
                 openGallery();
             }
-
 
         });
 
@@ -124,7 +120,13 @@ public class Ask extends AppCompatActivity {
 
         body = questionBody.getText().toString();
         title = questionTitle.getText().toString();
-        if (TextUtils.isEmpty(title)) {
+        code = courseCode.getText().toString();
+        if(TextUtils.isEmpty(code)){
+            courseCode.setError("Required");
+            courseCode.requestFocus();
+            Toast.makeText(Ask.this, "Please enter the course code", Toast.LENGTH_SHORT).show();
+        }
+        else if (TextUtils.isEmpty(title)) {
             questionTitle.setError("Required");
             questionTitle.requestFocus();
             Toast.makeText(Ask.this, "Please assign a title to your question", Toast.LENGTH_SHORT).show();
@@ -228,6 +230,7 @@ public class Ask extends AppCompatActivity {
                     questionMap.put("uid", currentUserId);
                     questionMap.put("date", saveCurrenDate);
                     questionMap.put("time", saveCurrentTime);
+                    questionMap.put("coursecode" , code.toLowerCase());
                     questionMap.put("body", body);
                     questionMap.put("title", title);
                     questionMap.put("questionImage", downloadUrl);
@@ -269,7 +272,6 @@ public class Ask extends AppCompatActivity {
         Calendar getDate = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         saveCurrenDate = currentDate.format(getDate.getTime());
-
 
         Calendar gettime = Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
